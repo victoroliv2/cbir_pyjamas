@@ -33,7 +33,7 @@ class CBIR(Composite):
     self.grid = FlexTable(CellPadding=4, CellSpacing=4)
     self.grid.addTableListener(self)
 
-    self.next = Button("Next", self)
+    self.next = Button("Next", self, StyleName='button')
 
     self.vp.add(Label("Content-Based Image Retrieval Using OPF =D"))
     self.vp.add(self.grid)
@@ -43,7 +43,7 @@ class CBIR(Composite):
 
     cols = 4
     for i in range(100):
-      im = Image('./images/cbir/%d.jpg' % i,  Size=("100%", "150px"))
+      im = Image('./images/cbir/%d.jpg' % i,  Size=("200px", "150px"), StyleName='image-cool')
       self.grid.setWidget(int(i/cols), i%cols, im)
 
     self.panel.add(self.vp, DockPanel.CENTER)

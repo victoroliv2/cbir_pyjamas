@@ -44,7 +44,7 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 			$p['setattr'](self, 'vp', $m['VerticalPanel']());
 			$p['setattr'](self, 'grid', $pyjs_kwargs_call(null, $m['FlexTable'], null, null, [{CellPadding:4, CellSpacing:4}]));
 			self['grid']['addTableListener'](self);
-			$p['setattr'](self, 'next', $m['Button']('Next', self));
+			$p['setattr'](self, 'next', $pyjs_kwargs_call(null, $m['Button'], null, null, [{StyleName:'button'}, 'Next', self]));
 			self['vp']['add']($m['Label']('Content-Based Image Retrieval Using OPF =D'));
 			self['vp']['add']($p['getattr'](self, 'grid'));
 			self['vp']['setHorizontalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_RIGHT'));
@@ -54,7 +54,7 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 			$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
 			while (typeof($p['__wrapped_next']($iter1_nextval).$nextval) != 'undefined') {
 				i = $iter1_nextval.$nextval;
-				im = $pyjs_kwargs_call(null, $m['Image'], null, null, [{Size:$p['tuple'](['100%', '150px'])}, $p['sprintf']('./images/cbir/%d.jpg', i)]);
+				im = $pyjs_kwargs_call(null, $m['Image'], null, null, [{Size:$p['tuple'](['200px', '150px']), StyleName:'image-cool'}, $p['sprintf']('./images/cbir/%d.jpg', i)]);
 				self['grid']['setWidget']($p['float_int']((typeof ($div1=i)==typeof ($div2=cols) && typeof $div1=='number' && $div2 !== 0?
 					$div1/$div2:
 					$p['op_div']($div1,$div2))), (typeof ($mod1=i)==typeof ($mod2=cols) && typeof $mod1=='number'?

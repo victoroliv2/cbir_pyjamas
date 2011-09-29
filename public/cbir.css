@@ -1,0 +1,27 @@
+.button {
+  font-size: 100%;
+  margin: 20px;
+  padding: 20px;
+  background-color: #8000ff;
+}
+
+.button:hover {
+  font-size: 100%;
+  margin: 20px;
+  padding: 20px;
+  background-color: #8080ff;
+}
+
+
+.image-cool
+{  
+  background: #f4f4f4;  
+  border: 5px double #bbbbbb;    
+  margin: 10px auto;  
+  position: relative;  
+}  
+
+.image-cool:hover {
+  border:5px double #000000;
+  opacity:0.5;
+}
