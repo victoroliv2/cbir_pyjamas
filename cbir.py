@@ -4,11 +4,13 @@ from pyjamas import DOM
 from pyjamas.ui.RootPanel import RootPanel, RootPanelCls, manageRootPanel
 from pyjamas.ui.HTML import HTML
 from pyjamas.ui.Label import Label
+from pyjamas.ui.Hyperlink import Hyperlink
 from pyjamas.ui.HTML import HTML
 from pyjamas.ui.Image import Image
 from pyjamas.ui.Button import Button
 from pyjamas.ui.DockPanel import DockPanel
 from pyjamas.ui.VerticalPanel import VerticalPanel
+from pyjamas.ui.HorizontalPanel import HorizontalPanel
 from pyjamas.ui import HasAlignment
 from pyjamas.ui.DockPanel import DockPanel
 from pyjamas.ui.Composite import Composite
@@ -33,17 +35,26 @@ class CBIR(Composite):
     self.grid = FlexTable(CellPadding=4, CellSpacing=4)
     self.grid.addTableListener(self)
 
-    self.next = Button("Next", self, StyleName='button')
+    self.hp = HorizontalPanel()
 
-    self.vp.add(Label("Content-Based Image Retrieval Using OPF =D"))
+    self.next   = Button("Next",    self, StyleName='button')
+    self.finish = Button("Finish!", self, StyleName='button')
+    self.clear  = Button("Clear",   self, StyleName='button')
+
+    self.hp.add(self.clear)
+    self.hp.add(self.finish)
+    self.hp.add(self.next)
+    self.hp.setWidth("70%")
+
+    self.vp.add(Label("Content-Based Image Retrieval Using OPF", StyleName='label'))
     self.vp.add(self.grid)
 
     self.vp.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
-    self.vp.add(self.next)
+    self.vp.add(self.hp)
 
     cols = 4
     for i in range(100):
-      im = Image('./images/cbir/%d.jpg' % i,  Size=("200px", "150px"), StyleName='image-cool')
+      im = Image('images/cbir/%d.jpg' % random.randint(0, 1000),  Size=("200px", "150px"), StyleName='image-cool')
       self.grid.setWidget(int(i/cols), i%cols, im)
 
     self.panel.add(self.vp, DockPanel.CENTER)

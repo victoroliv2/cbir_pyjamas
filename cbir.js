@@ -15,11 +15,13 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 	$m['manageRootPanel'] = $p['___import___']('pyjamas.ui.RootPanel.manageRootPanel', null, null, false);
 	$m['HTML'] = $p['___import___']('pyjamas.ui.HTML.HTML', null, null, false);
 	$m['Label'] = $p['___import___']('pyjamas.ui.Label.Label', null, null, false);
+	$m['Hyperlink'] = $p['___import___']('pyjamas.ui.Hyperlink.Hyperlink', null, null, false);
 	$m['HTML'] = $p['___import___']('pyjamas.ui.HTML.HTML', null, null, false);
 	$m['Image'] = $p['___import___']('pyjamas.ui.Image.Image', null, null, false);
 	$m['Button'] = $p['___import___']('pyjamas.ui.Button.Button', null, null, false);
 	$m['DockPanel'] = $p['___import___']('pyjamas.ui.DockPanel.DockPanel', null, null, false);
 	$m['VerticalPanel'] = $p['___import___']('pyjamas.ui.VerticalPanel.VerticalPanel', null, null, false);
+	$m['HorizontalPanel'] = $p['___import___']('pyjamas.ui.HorizontalPanel.HorizontalPanel', null, null, false);
 	$m['HasAlignment'] = $p['___import___']('pyjamas.ui.HasAlignment', null, null, false);
 	$m['DockPanel'] = $p['___import___']('pyjamas.ui.DockPanel.DockPanel', null, null, false);
 	$m['Composite'] = $p['___import___']('pyjamas.ui.Composite.Composite', null, null, false);
@@ -44,17 +46,24 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 			$p['setattr'](self, 'vp', $m['VerticalPanel']());
 			$p['setattr'](self, 'grid', $pyjs_kwargs_call(null, $m['FlexTable'], null, null, [{CellPadding:4, CellSpacing:4}]));
 			self['grid']['addTableListener'](self);
+			$p['setattr'](self, 'hp', $m['HorizontalPanel']());
 			$p['setattr'](self, 'next', $pyjs_kwargs_call(null, $m['Button'], null, null, [{StyleName:'button'}, 'Next', self]));
-			self['vp']['add']($m['Label']('Content-Based Image Retrieval Using OPF =D'));
+			$p['setattr'](self, 'finish', $pyjs_kwargs_call(null, $m['Button'], null, null, [{StyleName:'button'}, 'Finish!', self]));
+			$p['setattr'](self, 'clear', $pyjs_kwargs_call(null, $m['Button'], null, null, [{StyleName:'button'}, 'Clear', self]));
+			self['hp']['add']($p['getattr'](self, 'clear'));
+			self['hp']['add']($p['getattr'](self, 'finish'));
+			self['hp']['add']($p['getattr'](self, 'next'));
+			self['hp']['setWidth']('70%');
+			self['vp']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{StyleName:'label'}, 'Content-Based Image Retrieval Using OPF']));
 			self['vp']['add']($p['getattr'](self, 'grid'));
 			self['vp']['setHorizontalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_RIGHT'));
-			self['vp']['add']($p['getattr'](self, 'next'));
+			self['vp']['add']($p['getattr'](self, 'hp'));
 			cols = 4;
 			$iter1_iter = $p['range'](100);
 			$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
 			while (typeof($p['__wrapped_next']($iter1_nextval).$nextval) != 'undefined') {
 				i = $iter1_nextval.$nextval;
-				im = $pyjs_kwargs_call(null, $m['Image'], null, null, [{Size:$p['tuple'](['200px', '150px']), StyleName:'image-cool'}, $p['sprintf']('./images/cbir/%d.jpg', i)]);
+				im = $pyjs_kwargs_call(null, $m['Image'], null, null, [{Size:$p['tuple'](['200px', '150px']), StyleName:'image-cool'}, $p['sprintf']('images/cbir/%d.jpg', $m['random']['randint'](0, 1000))]);
 				self['grid']['setWidget']($p['float_int']((typeof ($div1=i)==typeof ($div2=cols) && typeof $div1=='number' && $div2 !== 0?
 					$div1/$div2:
 					$p['op_div']($div1,$div2))), (typeof ($mod1=i)==typeof ($mod2=cols) && typeof $mod1=='number'?
@@ -134,5 +143,5 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.DOM', 'pyjamas', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.RootPanel.RootPanelCls', 'pyjamas.ui.RootPanel.manageRootPanel', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Image.Image', 'pyjamas.ui.Image', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.DockPanel.DockPanel', 'pyjamas.ui.DockPanel', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HasAlignment', 'pyjamas.ui.Composite.Composite', 'pyjamas.ui.Composite', 'pyjamas.ui.FlexTable.FlexTable', 'pyjamas.ui.FlexTable', 'math', 'pygwt', 'random']
+PYJS_DEPS: ['pyjd', 'pyjamas.DOM', 'pyjamas', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.RootPanel.RootPanelCls', 'pyjamas.ui.RootPanel.manageRootPanel', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Hyperlink.Hyperlink', 'pyjamas.ui.Hyperlink', 'pyjamas.ui.Image.Image', 'pyjamas.ui.Image', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.DockPanel.DockPanel', 'pyjamas.ui.DockPanel', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.HasAlignment', 'pyjamas.ui.Composite.Composite', 'pyjamas.ui.Composite', 'pyjamas.ui.FlexTable.FlexTable', 'pyjamas.ui.FlexTable', 'math', 'pygwt', 'random']
 */
