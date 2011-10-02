@@ -24,6 +24,8 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 	$m['DockPanel'] = $p['___import___']('pyjamas.ui.DockPanel.DockPanel', null, null, false);
 	$m['Composite'] = $p['___import___']('pyjamas.ui.Composite.Composite', null, null, false);
 	$m['FlexTable'] = $p['___import___']('pyjamas.ui.FlexTable.FlexTable', null, null, false);
+	$m['HTTPRequest'] = $p['___import___']('pyjamas.HTTPRequest.HTTPRequest', null, null, false);
+	$m['urllib'] = $p['___import___']('urllib', null);
 	$m['math'] = $p['___import___']('math', null);
 	$m['pygwt'] = $p['___import___']('pygwt', null);
 	$m['random'] = $p['___import___']('random', null);
@@ -88,8 +90,11 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 				var self = arguments[0];
 				sender = arguments[1];
 			}
-
- 			return null;
+			var header,params;
+			params = $m['urllib']['urlencode']($p['dict']([['spam', 1], ['eggs', 2]]));
+			header = $p['dict']([['Content-type', 'application/x-www-form-urlencoded'], ['Accept', 'text/plain']]);
+			$pyjs_kwargs_call($m['HTTPRequest'](), 'asyncPost', null, null, [{url:'http://localhost:8000', postData:params, handler:(typeof myHandler == "undefined"?$m.myHandler:myHandler)(), headers:header}]);
+			return null;
 		}
 	, 1, [null,null,['self'],['sender']]);
 		$cls_definition['onClick'] = $method;
@@ -97,6 +102,30 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data.__setitem__($item, $cls_definition[$item]); }
 		return $p['_create_class']('CBIR', $p['tuple']($bases), $data);
+	})();
+	$m['myHandler'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition.__module__ = 'cbir';
+		$method = $pyjs__bind_method2('onCompletion', function(response) {
+			if (this.__is_instance__ === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				response = arguments[1];
+			}
+			var panel;
+			panel = $m['VerticalPanel']();
+			panel['add']($m['HTML'](response));
+			$m['RootPanel']()['add'](panel);
+			return null;
+		}
+	, 1, [null,null,['self'],['response']]);
+		$cls_definition['onCompletion'] = $method;
+		var $bases = new Array(pyjslib.object);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data.__setitem__($item, $cls_definition[$item]); }
+		return $p['_create_class']('myHandler', $p['tuple']($bases), $data);
 	})();
 	$m['CBIRWeb'] = (function(){
 		var $cls_definition = new Object();
@@ -134,5 +163,5 @@ $pyjs.loaded_modules['cbir'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.DOM', 'pyjamas', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.RootPanel.RootPanelCls', 'pyjamas.ui.RootPanel.manageRootPanel', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Image.Image', 'pyjamas.ui.Image', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.DockPanel.DockPanel', 'pyjamas.ui.DockPanel', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HasAlignment', 'pyjamas.ui.Composite.Composite', 'pyjamas.ui.Composite', 'pyjamas.ui.FlexTable.FlexTable', 'pyjamas.ui.FlexTable', 'math', 'pygwt', 'random']
+PYJS_DEPS: ['pyjd', 'pyjamas.DOM', 'pyjamas', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.RootPanel.RootPanelCls', 'pyjamas.ui.RootPanel.manageRootPanel', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Image.Image', 'pyjamas.ui.Image', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.DockPanel.DockPanel', 'pyjamas.ui.DockPanel', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HasAlignment', 'pyjamas.ui.Composite.Composite', 'pyjamas.ui.Composite', 'pyjamas.ui.FlexTable.FlexTable', 'pyjamas.ui.FlexTable', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'urllib', 'math', 'pygwt', 'random']
 */
