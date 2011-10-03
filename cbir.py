@@ -16,6 +16,9 @@ from pyjamas.ui.DockPanel import DockPanel
 from pyjamas.ui.Composite import Composite
 from pyjamas.ui.FlexTable import FlexTable
 
+from pyjamas.HTTPRequest import HTTPRequest
+import urllib 
+
 import math
 import pygwt
 import random
@@ -65,7 +68,16 @@ class CBIR(Composite):
     pass
 
   def onClick(self, sender):
-    pass
+    params = urllib.urlencode({'spam':1, 'eggs':2}) 
+    header = {'Content-type': 'application/x-www-form-urlencoded', 'Accept':'text/plain'} 
+    HTTPRequest().asyncPost(url="http://localhost:8000", postData=params, 
+                            handler=myHandler(), headers=header)
+
+class myHandler:
+  def onCompletion(self, response):
+    panel = VerticalPanel()
+    panel.add(HTML(response))
+    RootPanel().add(panel) 
 
 class CBIRWeb:
   def onModuleLoad(self):
