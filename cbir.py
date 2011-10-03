@@ -17,7 +17,9 @@ from pyjamas.ui.Composite import Composite
 from pyjamas.ui.FlexTable import FlexTable
 
 from pyjamas.HTTPRequest import HTTPRequest
+from pyjamas.JSONParser import JSONParser
 import urllib
+
 
 import math
 import pygwt
@@ -36,7 +38,6 @@ class CBIR(Composite):
     vp = VerticalPanel()
 
     grid = FlexTable(CellPadding=4, CellSpacing=4)
-    #grid.addTableListener(self)
 
     hp = HorizontalPanel()
 
@@ -64,25 +65,32 @@ class CBIR(Composite):
 
     self.initWidget(panel)
 
-  def onCellClicked(self, sender, row, col):
-    pass
+    self.status = Label()
+    vp.add(self.status)
+
+  def onCompletion(self, response):
+    self.status.setText(response)
+
+  def onModuleLoad(self):
+    self.TEXT_WAITING = "Waiting for response..."
+    self.TEXT_ERROR = "Server Error"
 
   def onClick(self, sender):
-    params = urllib.urlencode({'spam':1, 'eggs':2})
-    header = {'Content-type': 'application/x-www-form-urlencoded', 'Accept':'text/plain'}
-    HTTPRequest().asyncPost(url="http://localhost:8000", postData=params,
-                            handler=myHandler(), headers=header)
+    self.status.setText(self.TEXT_WAITING)
 
-class myHandler:
-  def onCompletion(self, response):
-    panel = VerticalPanel()
-    panel.add(HTML(response))
-    RootPanel().add(panel)
+    msg = JSONParser().encode( {'spam':1, 'eggs':2} )
+    print msg
+
+    params = urllib.quote(msg, safe="")
+
+    header = {'Content-type': 'application/x-www-form-urlencoded', 'Accept':'application/json'}
+    HTTPRequest().asyncPost(url="http://localhost:8000", postData=params, handler=self, headers=header)
 
 class CBIRWeb:
   def onModuleLoad(self):
-      self.cbir = CBIR()
-      RootPanel().add(self.cbir)
+    self.cbir = CBIR()
+    self.cbir.onModuleLoad()
+    RootPanel().add(self.cbir)
 
 if __name__ == '__main__':
     # for pyjd, set up a web server and load the HTML from there:
