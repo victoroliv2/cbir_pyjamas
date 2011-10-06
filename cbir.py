@@ -84,7 +84,7 @@ class CBIR(Composite):
     self.status = Label()
     vp.add(self.status)
 
-    self.remote_py = TestService()
+    #self.remote_py = TestService()
 
   def onModuleLoad(self):
     self.TEXT_WAITING = "Waiting for response..."
@@ -92,43 +92,27 @@ class CBIR(Composite):
 
   def onClick(self, sender):
     self.status.setText(self.TEXT_WAITING)
-    id = self.remote_py.add(10, 20, self)
+    #id = self.remote_py.add(10, 20, self)
 
-  def onRemoteResponse(self, response, request_info):
-    self.status.setText(response)
-
-    #msg = dumps( {'spam':1, 'eggs':2} )
-    #print msg
-    #params = urllib.quote(msg, safe="")
-    #header = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept':'application/json'}
+    msg = dumps( {'spam':1, 'eggs':2} )
+    params = urllib.quote(msg, safe="")
+    header = {'Content-Type': 'application/x-www-form-urlencoded',
+              'Accept'      : 'application/json'}
+    HTTPRequest().asyncGet (url = "http://localhost:8080",
+                            content_type = 'application/x-www-form-urlencoded',
+                            handler = HandleGET(self),
+                            headers = header)
     #HTTPRequest().asyncPost(url="http://localhost:8000", postData=params, handler=HandlePOST(self), headers=header)
-    #HTTPRequest().asyncGet (url="http://localhost:8000/index.html", content_type='application/x-www-form-urlencoded',  handler=HandleGET(self), headers=header)
+    return True
 
-  def onRemoteError(self, code, errobj, request_info):
-      # onRemoteError gets the HTTP error code or 0 and
-      # errobj is an jsonrpc 2.0 error dict:
-      #     {
-      #       'code': jsonrpc-error-code (integer) ,
-      #       'message': jsonrpc-error-message (string) ,
-      #       'data' : extra-error-data
-      #     }
-      message = errobj['message']
-      if code != 0:
-          self.status.setText("HTTP error %d: %s" %
-                              (code, message))
-      else:
-          code = errobj['code']
-          self.status.setText("JSONRPC Error %s: %s" %
-                              (code, message))
+class HandleGET:
+  def __init__ (self, app):
+    self.app = app
 
-#class HandleGET:
-#  def __init__ (self, app):
-#    self.app = app
-#
-#  def onCompletion(self, response):
-#    self.app.status.setText(response)
-#    print "GET completed!", response
-#
+  def onCompletion(self, response):
+    self.app.status.setText(response)
+    print "GET completed!", response
+
 #class HandlePOST:
 #  def __init__ (self, app):
 #    self.app = app
