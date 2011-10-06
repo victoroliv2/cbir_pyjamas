@@ -1,15 +1,18 @@
 import os
 import sys
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from SimpleHTTPServer import SimpleHTTPRequestHandler
 import json
 import urllib
 
-class customHTTPServer(BaseHTTPRequestHandler):
+class customHTTPServer(SimpleHTTPRequestHandler):
         def do_GET(self):
                 self.send_response(200)
-                self.send_header('Content-type', 'application/json')
+                self.send_header('Content-type', 'application/x-www-form-urlencoded')
+                self.send_header('Accept', 'application/json')
                 self.end_headers()
-                self.wfile.write( json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}]) )
+                #self.wfile.write( urllib.quote(json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}]) ))
+                self.wfile.write( "hi!" )
                 return
 
         def do_POST(self):
@@ -20,9 +23,12 @@ class customHTTPServer(BaseHTTPRequestHandler):
                 length = int( self.headers['Content-Length'] )
                 data = json.loads( urllib.unquote( self.rfile.read(length) ))
                 print data
-                self.send_response(201)
+                self.send_response(200)
+                self.send_header('Content-type', 'application/x-www-form-urlencoded')
+                self.send_header('Accept', 'application/json')
                 self.end_headers()
-                self.wfile.write('Post!')
+                self.wfile.write( urllib.quote(json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}])  ))
+                return
 
 def main():
         try:

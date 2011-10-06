@@ -17,8 +17,24 @@ from pyjamas.ui.Composite import Composite
 from pyjamas.ui.FlexTable import FlexTable
 
 from pyjamas.HTTPRequest import HTTPRequest
-from pyjamas.JSONParser import JSONParser
+from pyjamas.JSONService import JSONProxy
 import urllib
+
+try:
+    # included in python 2.6...
+    from json import dumps, loads
+except ImportError:
+    try:
+        # recommended library (python 2.5)
+        from simplejson import dumps, loads
+    except ImportError:
+        # who's the pyjs daddy?
+        from pyjamas.JSONParser import JSONParser
+        parser = JSONParser()
+        dumps = getattr(parser, 'encode')
+        loads = getattr(parser, 'decodeAsObject')
+        JSONDecodeException = None
+
 
 
 import math
@@ -68,8 +84,7 @@ class CBIR(Composite):
     self.status = Label()
     vp.add(self.status)
 
-  def onCompletion(self, response):
-    self.status.setText(response)
+    self.remote_py = TestService()
 
   def onModuleLoad(self):
     self.TEXT_WAITING = "Waiting for response..."
@@ -77,14 +92,54 @@ class CBIR(Composite):
 
   def onClick(self, sender):
     self.status.setText(self.TEXT_WAITING)
+    id = self.remote_py.add(10, 20, self)
 
-    msg = JSONParser().encode( {'spam':1, 'eggs':2} )
-    print msg
+  def onRemoteResponse(self, response, request_info):
+    self.status.setText(response)
 
-    params = urllib.quote(msg, safe="")
+    #msg = dumps( {'spam':1, 'eggs':2} )
+    #print msg
+    #params = urllib.quote(msg, safe="")
+    #header = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept':'application/json'}
+    #HTTPRequest().asyncPost(url="http://localhost:8000", postData=params, handler=HandlePOST(self), headers=header)
+    #HTTPRequest().asyncGet (url="http://localhost:8000/index.html", content_type='application/x-www-form-urlencoded',  handler=HandleGET(self), headers=header)
 
-    header = {'Content-type': 'application/x-www-form-urlencoded', 'Accept':'application/json'}
-    HTTPRequest().asyncPost(url="http://localhost:8000", postData=params, handler=self, headers=header)
+  def onRemoteError(self, code, errobj, request_info):
+      # onRemoteError gets the HTTP error code or 0 and
+      # errobj is an jsonrpc 2.0 error dict:
+      #     {
+      #       'code': jsonrpc-error-code (integer) ,
+      #       'message': jsonrpc-error-message (string) ,
+      #       'data' : extra-error-data
+      #     }
+      message = errobj['message']
+      if code != 0:
+          self.status.setText("HTTP error %d: %s" %
+                              (code, message))
+      else:
+          code = errobj['code']
+          self.status.setText("JSONRPC Error %s: %s" %
+                              (code, message))
+
+#class HandleGET:
+#  def __init__ (self, app):
+#    self.app = app
+#
+#  def onCompletion(self, response):
+#    self.app.status.setText(response)
+#    print "GET completed!", response
+#
+#class HandlePOST:
+#  def __init__ (self, app):
+#    self.app = app
+#
+#  def onCompletion(self, response):
+#    self.app.status.setText(response)
+#    print "POST completed!", response
+
+class TestService(JSONProxy):
+  def __init__(self):
+    JSONProxy.__init__(self, "http://localhost:8080", ["add", "ping"])
 
 class CBIRWeb:
   def onModuleLoad(self):
@@ -96,7 +151,7 @@ if __name__ == '__main__':
     # for pyjd, set up a web server and load the HTML from there:
     # this convinces the browser engine that the AJAX will be loaded
     # from the same URI base as the URL, it's all a bit messy...
-    pyjd.setup("public/index.html")
+    pyjd.setup("http://localhost:8080/index.html")
     app = CBIRWeb()
     app.onModuleLoad()
     pyjd.run()
