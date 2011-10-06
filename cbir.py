@@ -43,6 +43,40 @@ import random
 
 from __pyjamas__ import JS
 
+class NextHandle:
+  def __init__ (self, app):
+    self.app = app
+
+  def onCompletion(self, response):
+    self.app.status.setText(response)
+    print "GET completed!", response
+
+  def onClick(self, sender):
+    self.app.status.setText(self.app.TEXT_WAITING)
+
+    HTTPRequest().asyncGet (url = "http://0.0.0.0:8080/",
+                            handler = self)
+                            
+class FinishHandle:
+  def __init__ (self, app):
+    self.app = app
+
+  def onCompletion(self, response):
+    self.app.status.setText(response)
+    print "POST completed!", response
+
+  def onClick(self, sender):
+    self.app.status.setText(self.app.TEXT_WAITING)
+    msg = dumps( {'spam':1, 'eggs':2} )
+
+    HTTPRequest().asyncPost(url = "http://0.0.0.0:8080/",
+                            postData = msg,
+                            handler = self)
+
+class ClearHandle:
+  def onClick(self, sender):
+    pass
+
 class CBIR(Composite):
   def __init__(self):
     Composite.__init__(self)
@@ -57,9 +91,13 @@ class CBIR(Composite):
 
     hp = HorizontalPanel()
 
-    self.next   = Button("Next",    self, StyleName='button')
-    self.finish = Button("Finish!", self, StyleName='button')
-    self.clear  = Button("Clear",   self, StyleName='button')
+    handle_n = NextHandle(self)
+    handle_f = FinishHandle(self)
+    handle_c = ClearHandle(self)
+
+    self.next   = Button("Next",    handle_n, StyleName='button')
+    self.finish = Button("Finish!", handle_f, StyleName='button')
+    self.clear  = Button("Clear",   handle_c, StyleName='button')
 
     hp.add(self.clear)
     hp.add(self.finish)
@@ -87,32 +125,8 @@ class CBIR(Composite):
   def onModuleLoad(self):
     self.TEXT_WAITING = "Waiting for response..."
     self.TEXT_ERROR = "Server Error"
-
-  def onClick(self, sender):
-    self.status.setText(self.TEXT_WAITING)
-    #msg = dumps( {'spam':1, 'eggs':2} )
-    #params = urllib.quote(msg, safe="")
-    HTTPRequest().asyncGet (url = "http://0.0.0.0:8080/",
-                            handler = HandleGET(self))
                             
-    #HTTPRequest().asyncPost(url="http://localhost:8000", postData=params, handler=HandlePOST(self), headers=header)
     return True
-
-class HandleGET:
-  def __init__ (self, app):
-    self.app = app
-
-  def onCompletion(self, response):
-    self.app.status.setText(response)
-    print "GET completed!", response
-
-#class HandlePOST:
-#  def __init__ (self, app):
-#    self.app = app
-#
-#  def onCompletion(self, response):
-#    self.app.status.setText(response)
-#    print "POST completed!", response
 
 class CBIRWeb:
   def onModuleLoad(self):

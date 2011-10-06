@@ -27,10 +27,19 @@ class Service:
         #http://stackoverflow.com/questions/3595515/xmlhttprequest-error-origin-null-is-not-allowed-by-access-control-allow-origin
         web.header('Access-Control-Allow-Origin',      '*')
         web.header('Access-Control-Allow-Credentials', 'true')
+
+        import random
         
-        if not name: 
-            name = 'world'
-        return {'message': 'Hello, ' + name + '!'}
+        return {'message': 'Hello! %d !' % random.randint(0, 1000)}
+
+    def POST(self, name):
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+        
+        data = web.data()
+        images = json.loads(data)
+        print images
+        return {'message': "POST OK!"}
 
 if __name__ == "__main__":
     app.run()
