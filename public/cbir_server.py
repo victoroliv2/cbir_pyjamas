@@ -1,57 +1,36 @@
-import os
-import sys
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from SimpleHTTPServer import SimpleHTTPRequestHandler
+import web
 import json
-import urllib
+from mimerender import mimerender
 
-class customHTTPServer(SimpleHTTPRequestHandler):
-  def do_OPTION(self):
-    #https://developer.mozilla.org/En/Server-Side_Access_Control
-    if self.headers['Origin'] == 'localhost.localdomain':
-      self.send_response(200)
-      self.send_header('Access-Control-Allow-Origin'  , 'localhost.localdomain')
-      self.send_header('Access-Control-Allow-Methods' , 'POST, GET, OPTIONS')
-      self.send_header('Access-Control-Allow-Headers' , 'X-PINGARUNER')
-      self.send_header('Access-Control-Max-Age'       , '1728000')
-      self.send_header('Content-Length'               , '0')
-      self.send_header("Content-Type'                 ,  text/plain")
-      self.end_headers()
-    else:
-      self.send_response(403)
-      self.end_headers()
+render_xml = lambda message: '<message>%s</message>'%message
+render_json = lambda **args: json.dumps(args)
+render_html = lambda message: '<html><body>%s</body></html>'%message
+render_txt = lambda message: message
 
-  def do_GET(self):
-    self.send_response(200)
-    self.send_header('Content-type', 'application/x-www-form-urlencoded')
-    #self.send_header('Accept', 'application/json')
-    self.end_headers()
-    self.wfile.write( urllib.quote(json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}]) ))
-    #self.wfile.write( "hi!" )
-    return
+urls = (
+    '/(.*)', 'Service'
+)
+app = web.application(urls, globals())
 
-  def do_POST(self):
-    if self.headers['Accept'] != 'application/json':
-      self.send_response(406) # Not acceptable
-      return
+#http://johnpaulett.com/2008/09/20/getting-restful-with-webpy/
 
-    length = int( self.headers['Content-Length'] )
-    data = json.loads( urllib.unquote( self.rfile.read(length) ))
-    print data
-    self.send_response(200)
-    self.send_header('Content-type', 'application/x-www-form-urlencoded')
-    self.send_header('Accept', 'application/json')
-    self.end_headers()
-    self.wfile.write( urllib.quote(json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}])  ))
-    return
+class Service:
+    @mimerender(
+        default = 'html',
+        html = render_html,
+        xml  = render_xml,
+        json = render_json,
+        txt  = render_txt
+    )
+    def GET(self, name):
+        #http://hacks.mozilla.org/2009/07/cross-site-xmlhttprequest-with-cors/
+        #http://stackoverflow.com/questions/3595515/xmlhttprequest-error-origin-null-is-not-allowed-by-access-control-allow-origin
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+        
+        if not name: 
+            name = 'world'
+        return {'message': 'Hello, ' + name + '!'}
 
-def main():
-  try:
-    server = HTTPServer(('localhost', 8080),customHTTPServer)
-    print 'server started at port 8080'
-    server.serve_forever()
-  except KeyboardInterrupt:
-    server.socket.close()
-
-if __name__=='__main__':
-        main()
+if __name__ == "__main__":
+    app.run()

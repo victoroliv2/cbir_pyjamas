@@ -84,24 +84,17 @@ class CBIR(Composite):
     self.status = Label()
     vp.add(self.status)
 
-    #self.remote_py = TestService()
-
   def onModuleLoad(self):
     self.TEXT_WAITING = "Waiting for response..."
     self.TEXT_ERROR = "Server Error"
 
   def onClick(self, sender):
     self.status.setText(self.TEXT_WAITING)
-    #id = self.remote_py.add(10, 20, self)
-
-    msg = dumps( {'spam':1, 'eggs':2} )
-    params = urllib.quote(msg, safe="")
-    header = {'Content-Type': 'application/x-www-form-urlencoded',
-              'Accept'      : 'application/json'}
-    HTTPRequest().asyncGet (url = "http://localhost:8080",
-                            content_type = 'application/x-www-form-urlencoded',
-                            handler = HandleGET(self),
-                            headers = header)
+    #msg = dumps( {'spam':1, 'eggs':2} )
+    #params = urllib.quote(msg, safe="")
+    HTTPRequest().asyncGet (url = "http://0.0.0.0:8080/",
+                            handler = HandleGET(self))
+                            
     #HTTPRequest().asyncPost(url="http://localhost:8000", postData=params, handler=HandlePOST(self), headers=header)
     return True
 
@@ -120,10 +113,6 @@ class HandleGET:
 #  def onCompletion(self, response):
 #    self.app.status.setText(response)
 #    print "POST completed!", response
-
-class TestService(JSONProxy):
-  def __init__(self):
-    JSONProxy.__init__(self, "http://localhost:8080", ["add", "ping"])
 
 class CBIRWeb:
   def onModuleLoad(self):
